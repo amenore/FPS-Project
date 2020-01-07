@@ -23,8 +23,6 @@ public class GunController : MonoBehaviour
 
     float timeSinceFire;
 
-    bool isADS = false;
-
     // Start is called before the first frame update
     void Start()
     {

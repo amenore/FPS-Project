@@ -7,23 +7,24 @@ public class BulletScript : MonoBehaviour
     bool hasImpacted = false;
     public LayerMask layerMask = 1;
     float timeSinceImpact;
+    float timeSinceFired;
 
     public ParticleSystem impactEffect;
+
+    bool hasFired;
 
     // Start is called before the first frame update
     void Start()
     {
-        this.impactEffect.gameObject.SetActive(false);
+        impactEffect.gameObject.SetActive(false);
     }
 
     void Update()
     {
-        if (hasImpacted)
+        timeSinceFired += Time.deltaTime;
+        if ((hasImpacted || timeSinceFired >= 3) && gameObject.name != "Bullet")
         {
             timeSinceImpact += Time.deltaTime;
-        }
-        if (timeSinceImpact >= .1)
-        {
             Destroy(this.gameObject);
         }
     }
@@ -33,8 +34,12 @@ public class BulletScript : MonoBehaviour
     {   
         hasImpacted = true;
         print(hasImpacted);
-        this.impactEffect.gameObject.SetActive(true);
-        this.GetComponent<Renderer>().enabled = !GetComponent<Renderer>().enabled;
+        if (gameObject.name != "Bullet")
+        {
+            ParticleSystem impactEffectInstance = Instantiate(impactEffect, new Vector3(transform.position.x, transform.position.y, transform.position.z), transform.rotation);
+            impactEffectInstance.gameObject.AddComponent<ParticleExpiration>();
+            impactEffectInstance.gameObject.SetActive(true);
+        }
     }
 
     
